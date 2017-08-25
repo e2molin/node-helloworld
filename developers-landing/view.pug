@@ -2,6 +2,7 @@
   Podemos crear un fichero index.pug con la definición de librerías y scripts
   que usa la página, para no repetirla en cada plantilla.
 
+/*Así hacemos referencia al fichero con el scaffold*/
 extends ../index.pug  
 block content
     section.hero.is-primary.is-bold.is-medium
@@ -12,12 +13,15 @@ block content
           
     ul.container(style={'padding-top':'20px'})
       each developer in developers
-        article.media
-          figure.media-left
-            p.image.is-128x128
-              img(src=developer.image)
-          .media-content
-            .content
-              h3.title.is-3= developer.name
-              h5.subtitle.is-5= 'Lenguaje favorito: ' + developer.favouriteLanguage
-              p= 'LLorem ipsum sinea justuiciae lobit versum et.'
+        a(href="/developers/" + developer.id)
+          article.media(style={'padding-top':'10px','padding-left':'10px'})
+            figure.media-left
+              //Esto oculta la imagen en un dispositivo móvil
+              p.image.is-128x128.is-hidden-mobile 
+                img(src=developer.image)
+              p.image.is-64x64.is-hidden-tablet 
+                img(src=developer.image)
+            .media-content
+              .content
+                h3.title.is-3= developer.name
+                h5.subtitle.is-5= 'Lenguaje favorito: ' + developer.favouriteLanguage
