@@ -1,0 +1,11 @@
+//-
+  Podemos crear un fichero index.pug con la definición de librerías y scripts
+  que usa la página, para no repetirla en cada plantilla.
+
+extends ../index.pug  
+block content
+    SECTION.hero.is-dark.is-bold.is-medium
+      .hero-body
+        .container
+          h1.title=developer.name
+          h3.title=developer.favouriteLanguage

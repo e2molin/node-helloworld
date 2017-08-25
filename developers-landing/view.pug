@@ -1,0 +1,26 @@
+//-
+  Podemos crear un fichero index.pug con la definición de librerías y scripts
+  que usa la página, para no repetirla en cada plantilla.
+
+extends ../index.pug  
+block content
+    section.hero.is-primary.is-bold.is-medium
+      .hero-body
+        .container
+          h1.title= title
+          h2.subtitle= subtitle
+          
+    ul.container(style={'padding-top':'20px'})
+      each developer in developers
+        article.media
+          figure.media-left
+            p.image.is-128x128
+              img(src='http://bulma.io/images/placeholders/128x128.png')
+          .media-content
+            .content
+              h3.title.is-3= developer.name
+              h5.subtitle.is-5= 'Lenguaje favorito: ' + developer.favouriteLanguage
+              p= 'LLorem ipsum sinea justuiciae lobit versum et.'
+              
+block scripts
+    script()
