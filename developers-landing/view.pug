@@ -1,27 +1,77 @@
 //-
   Podemos crear un fichero index.pug con la definición de librerías y scripts
   que usa la página, para no repetirla en cada plantilla.
+  Para hacer referencia a ese fichero con el scaffold utilizamos extends ../index.pug
 
-/*Así hacemos referencia al fichero con el scaffold*/
 extends ../index.pug  
+
 block content
     section.hero.is-primary.is-bold.is-medium
       .hero-body
         .container
-          h1.title= title
-          h2.subtitle= subtitle
+          h1.title-is-1= staticContent.title
+          h2.subtitle.is-3= staticContent.subtitle
+
+    p.control.has-icon.has-icon-right(style={"margin": "20px"})
+      input.input.is-large(
+        type="text" 
+        placeholder=staticContent.filterPlaceHolder 
+        v-model="filterQuery"
+        v-on:input="updateUrl($event.target.value)"
+        )
+      span.icon.is-medium
+        i.fa.fa-search
           
-    ul.container(style={'padding-top':'20px'})
-      each developer in developers
-        a(href="/developers/" + developer.id)
-          article.media(style={'padding-top':'10px','padding-left':'10px'})
-            figure.media-left
-              //Esto oculta la imagen en un dispositivo móvil
-              p.image.is-128x128.is-hidden-mobile 
-                img(src=developer.image)
-              p.image.is-64x64.is-hidden-tablet 
-                img(src=developer.image)
-            .media-content
-              .content
-                h3.title.is-3= developer.name
-                h5.subtitle.is-5= 'Lenguaje favorito: ' + developer.favouriteLanguage
+    ul.container
+      //-En vez de mostrar developers, mostramos los developers que nos devuelve la función displayedDevelopers, 
+        que serán todos o un subconjunto del array developers.
+      developer-tile(v-for="dev in displayedDevelopers" v-bind:developer="dev")
+    
+    script(type="text/x-template" id="developerTileTemplate")
+        include views/developer-tile.pug
+      
+block scripts
+  script(type="text/javascript").
+    
+    var pugData = !{data};
+    
+    Vue.component('developerTile',{
+      template: '#developerTileTemplate',
+      props: ['developer']
+    });
+    
+    var vm = new Vue({
+      el: '#app',
+      data: {
+        developers: pugData.developers,
+        filterQuery: pugData.filterQuery
+      },
+      computed: {
+        displayedDevelopers: function (){
+          var developers = this.developers;
+          var filteredDevelopers= developers.filter(this.filterDevelopers);
+          //return developers.splice(0,3);
+          return filteredDevelopers;
+        }
+      },
+      methods:{
+        filterDevelopers: function(developer){
+          var lowercaseName= developer.name.toLowerCase();
+          var lowercaseQuery= this.filterQuery.toLowerCase();
+          return lowercaseName.indexOf(lowercaseQuery) > -1;
+        },
+        updateUrl: function(value){
+          //Cuando hacemos búsqueda, actualizamos url del navegador sin refrescar la página
+          if (value.length==0){
+              window.history.replaceState({},'Developers','/developers');  
+          }else{
+            window.history.replaceState({},'Developers','/developers?search=' + value);  
+          }
+          console.log("clic: " + value);
+        }
+      },
+      created: function(){
+        console.log('Received ' + this.developers.length + ' developers');
+      }
+    
+    });

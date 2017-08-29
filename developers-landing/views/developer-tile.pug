@@ -1,0 +1,13 @@
+a.box(v-bind:href='"/developers/" + developer.id'  style={'margin':'20px'})
+    article.media
+      figure.media-left
+        //Esto oculta la imagen en un dispositivo móvil
+        p.image.is-128x128.is-hidden-mobile 
+          img(v-bind:src='developer.image')
+        p.image.is-64x64.is-hidden-tablet 
+          img(v-bind:src='developer.image')
+      .media-content
+        .content
+          h2(v-html="developer.name")
+          p(v-html="developer.favouriteLanguage")
+          

@@ -8,7 +8,10 @@ var developersDetail = require('./developers-detail');
 app.set('views','.');
 app.set('view engine','pug');
 
-app.get('/', homepage.controller);
+app.get('/', function (req,res){
+  res.redirect('/developers');//Así redirigimos si metemos el home a la decelopers-landing
+});
+
 app.get('/developers', developersLanding.controller);
 app.get('/developers/:developerId', developersDetail.controller);
 

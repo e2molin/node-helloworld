@@ -5,8 +5,17 @@ var model = require('./model');
 //La estructura es la misma que en la del controlador homepage
 module.exports = function (req,res){
   var developerId = req.params.developerId;
-  var developer = developersHelper.getDeveloperById(developerId);//Así llamamos a la función
-  //Antes usábamos res.send. Pero ahora para usar el motor de plantillas, utilizamos res.render
-  res.render('developers-detail/view',model(developer));
+
+   developersHelper.getDeveloperById(developerId).then(function (developer){
+     var staticContent = {
+       developer: developer,
+       app: {
+         title: 'My Company | ' + (developer.firstName + ' ' + developer.lastName)
+       }
+     };
+     var data = {};
+     res.render('developers-detail/view',model(staticContent,data));
+   });
+
 
 }

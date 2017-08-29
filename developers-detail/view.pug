@@ -2,11 +2,29 @@
   Podemos crear un fichero index.pug con la definición de librerías y scripts
   que usa la página, para no repetirla en cada plantilla.
 
-extends ../index.pug  
+extends ../index.pug
+
 block content
-    SECTION.hero.is-dark.is-bold.is-medium
-      .hero-body
-        .container
-          h1.title=developer.name
-          h3.title=developer.favouriteLanguage
-    a(href='../developers')='Volver a la lista'
+
+
+    section.hero.is-dark.is-bold.is-medium
+        .hero-body
+            .container
+                h1.title.is-1= staticContent.developer.firstName + " " + staticContent.developer.lastName
+                h2.subtitle.is-3= staticContent.developer.title
+
+    section.hero
+        .hero-body
+            .container
+                h3.subtitle.is-3
+                    strong= "About " + staticContent.developer.firstName
+                h3.subtitle.is-4!= staticContent.developer.bio
+                ul.subtitle.is-4
+                    each fact in staticContent.developer.facts
+                        br
+                        li!= fact
+                hr
+
+                a.button.is-large.is-dark.is-expanded.is-outlined(href="/developers")
+                    i.fa.fa-arrow-left(style={"padding-right": "10px"})
+                    span= "Developers"
