@@ -1,6 +1,6 @@
 //Definimos un objeto para acceder a las funciones del directorio helpers
 var developersHelper = require('../helpers/developers');
-//Lo datos los guardamos en una estructura de modelo. Alfichero de modelo model.js se accede así
+//Lo datos los guardamos en una estructura de modelo. Al fichero de modelo model.js se accede así
 var model = require('./model');
 //La estructura es la misma que en la del controlador homepage
 module.exports = function (req,res){
@@ -13,8 +13,15 @@ module.exports = function (req,res){
          title: 'My Company | ' + (developer.firstName + ' ' + developer.lastName)
        }
      };
+
+
      var data = {};
-     res.render('developers-detail/view',model(staticContent,data));
+     /*res.render('developers-detail/view',{
+       developer: developer,
+       staticContent: staticContent
+     });*/
+     res.render('developers-detail/view',model(staticContent, developer));
+
    });
 
 

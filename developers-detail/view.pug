@@ -1,30 +1,27 @@
-//-
-  Podemos crear un fichero index.pug con la definición de librerías y scripts
-  que usa la página, para no repetirla en cada plantilla.
-
 extends ../index.pug
 
 block content
+  .card(style={"margin":"20px"})
+    .card-image
+      figure.image.is-320x240
+        img(src='https://www.orangetax.com/wp-content/uploads/2014/04/corporate1-320x240.jpg' alt=developer.name + '\'s Image')
+    .card-content
+      .media
+        .media-left
+          figure.image.is-48x48
+            img(src=staticContent.developer.image alt=developer.name + '\'s Image')
+        .media-content
+          p.title.is-6= developer.name
+          p.subtitle.is-6= developer.favouriteLanguage + ' - ' + staticContent.developer.gender
+      .content
+        p= developer.bio
+        hr
+        ul.subtitle.is-size-6
+          each fact in staticContent.developer.facts
+            li!=fact
+            hr
 
-
-    section.hero.is-dark.is-bold.is-medium
-        .hero-body
-            .container
-                h1.title.is-1= staticContent.developer.firstName + " " + staticContent.developer.lastName
-                h2.subtitle.is-3= staticContent.developer.title
-
-    section.hero
-        .hero-body
-            .container
-                h3.subtitle.is-3
-                    strong= "About " + staticContent.developer.firstName
-                h3.subtitle.is-4!= staticContent.developer.bio
-                ul.subtitle.is-4
-                    each fact in staticContent.developer.facts
-                        br
-                        li!= fact
-                hr
-
-                a.button.is-large.is-dark.is-expanded.is-outlined(href="/developers")
-                    i.fa.fa-arrow-left(style={"padding-right": "10px"})
-                    span= "Developers"
+        a.button.is-small.is-dark.is-expanded.is-outlined(href="/developers")
+          i.fa.fa-arrow-left(style={"padding-right": "10px"})
+          span= "Developers"
+              

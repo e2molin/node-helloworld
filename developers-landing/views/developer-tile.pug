@@ -8,6 +8,6 @@ a.box(v-bind:href='"/developers/" + developer.id'  style={'margin':'20px'})
           img(v-bind:src='developer.image')
       .media-content
         .content
-          h2(v-html="developer.name")
+          h2(v-html="fullName")
           p(v-html="developer.favouriteLanguage")
           

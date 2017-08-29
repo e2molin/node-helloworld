@@ -21,14 +21,33 @@ block content
         )
       span.icon.is-medium
         i.fa.fa-search
-          
+    
+    p.control.has-addons(style={"margin": "20px"})
+      sort-button(label="First name"
+                  value="firstName"
+                  v-bind:sort-options="sortOptions"
+                  v-on:sort-by="sortBy")
+      sort-button(label="Last name"
+                  value="lastName"
+                  v-bind:sort-options="sortOptions"
+                  v-on:sort-by="sortBy")
+      sort-button(label="Favourite language"
+                  value="favouriteLanguage"
+                  v-bind:sort-options="sortOptions"
+                  v-on:sort-by="sortBy")
+            
     ul.container
       //-En vez de mostrar developers, mostramos los developers que nos devuelve la función displayedDevelopers, 
         que serán todos o un subconjunto del array developers.
       developer-tile(v-for="dev in displayedDevelopers" v-bind:developer="dev")
     
+    //-Aquí se definen los templates de los componentes. Cuando un componente es muy complejo, para simplificar
+      su definición se hace en un template aparte y se define aquí
     script(type="text/x-template" id="developerTileTemplate")
         include views/developer-tile.pug
+        
+    script(type="text/x-template" id="sortButtonTemplate")
+        include views/sort-button.pug
       
 block scripts
   script(type="text/javascript").
@@ -37,37 +56,101 @@ block scripts
     
     Vue.component('developerTile',{
       template: '#developerTileTemplate',
-      props: ['developer']
+      props: ['developer'],
+      computed: {
+        fullName: function(){
+          //Aquí es cómo se muestran los nombres en el developerTile
+          return this.developer.firstName + ' ' +  this.developer.lastName;
+        }
+      }
     });
+    
+    Vue.component('sortButton',{
+      template: '#sortButtonTemplate',
+      props: ['label','value','sortOptions'],
+      computed: {
+        iconClasses: function(){
+          if(this.sortOptions.value == this.value){
+           return (this.sortOptions.ascending) ? 'fa fa-sort-desc' : 'fa fa-sort-asc';
+          } else{
+            return '';
+          }
+        }
+      },
+      methods: {
+        sortBy: function(){
+          this.$emit('sort-by',this.value);
+        }
+      }
+    });
+
+
     
     var vm = new Vue({
       el: '#app',
       data: {
         developers: pugData.developers,
-        filterQuery: pugData.filterQuery
+        filterQuery: pugData.filterQuery,
+        sortOptions:{
+          value: 'lastName',
+          ascending: true
+        }
       },
       computed: {
         displayedDevelopers: function (){
           var developers = this.developers;
           var filteredDevelopers= developers.filter(this.filterDevelopers);
-          //return developers.splice(0,3);
-          return filteredDevelopers;
+          
+          var filteredAndSortedDevelopers = filteredDevelopers.sort(this.sortDevelopers);
+            
+          return filteredAndSortedDevelopers;
         }
       },
       methods:{
         filterDevelopers: function(developer){
-          var lowercaseName= developer.name.toLowerCase();
+          var lowercaseName= this.getFullName(developer).toLowerCase();
           var lowercaseQuery= this.filterQuery.toLowerCase();
           return lowercaseName.indexOf(lowercaseQuery) > -1;
+        },
+        sortDevelopers: function(a,b){
+          var LT=-1, GT=1,EQ=0;
+          var value = this.sortOptions.value;
+          var ascending = this.sortOptions.ascending;
+
+          
+          var aVal = a[value];
+          var bVal = b[value];
+          
+          if (aVal < bVal)
+            return (ascending) ? LT : GT;
+          else if (aVal > bVal)
+            return (ascending) ? GT : LT;
+          else
+            return EQ;
+          
         },
         updateUrl: function(value){
           //Cuando hacemos búsqueda, actualizamos url del navegador sin refrescar la página
           if (value.length==0){
-              window.history.replaceState({},'Developers','/developers');  
+            window.history.replaceState({},'Developers','/developers');  
           }else{
             window.history.replaceState({},'Developers','/developers?search=' + value);  
           }
           console.log("clic: " + value);
+        },
+        sortBy: function(value){
+          if(this.sortOptions.value == value){
+            this.sortOptions.ascending = !this.sortOptions.ascending;
+          } else {
+            this.sortOptions = {
+              value: value,
+              ascending: true
+            }
+          
+          }
+        },
+        getFullName: function(developer){
+          return developer.firstName + ' ' +  developer.lastName;
         }
       },
       created: function(){
